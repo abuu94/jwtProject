@@ -47,6 +47,59 @@ Token contains minimal claims	✅ Yes
 User info returned separately	✅ Yes
 So your current approach — returning access, refresh, and a separate user object — is spot-on. Let me know if you want to explore token rotation, refresh flows, or securing tokens in localStorage vs. cookies.
 
+
+
+
+
+Excellent question — and one that touches both security and design clarity in JWT-based authentication.
+
+✅ Best Practice: Return token and user info separately
+Here’s why this is preferred:
+
+1. Security & Token Size
+JWTs should be compact and contain only what's necessary for authentication and authorization.
+
+Embedding full user info (like email, role, etc.) in the token increases its size and risk exposure if leaked.
+
+Minimal claims like user_id, exp, and role are enough for backend validation.
+
+2. Privacy & Flexibility
+If you include sensitive user info in the token (e.g., email, phone), it’s visible to anyone who decodes it — even if it’s signed.
+
+Keeping user info separate allows you to control what’s exposed and update it dynamically without regenerating tokens.
+
+3. Frontend Simplicity
+Returning user info alongside the token (in the response body) makes it easy for the frontend to store and display user details without decoding the token.
+
+Example:
+
+json
+{
+  "access": "jwt-access-token",
+  "refresh": "jwt-refresh-token",
+  "user": {
+    "id": 12,
+    "username": "johndoe",
+    "email": "john@example.com",
+    "role": "seller"
+  }
+}
+🔐 What Should Be in the Token?
+Only include claims that:
+
+Are needed for authorization checks (e.g., role, user_id)
+
+Are safe to expose (no PII like email or phone)
+
+Are static during the token’s lifetime
+
+🧠 Summary
+Strategy	Best Practice
+Token contains full user info	❌ Not recommended
+Token contains minimal claims	✅ Yes
+User info returned separately	✅ Yes
+So your current approach — returning access, refresh, and a separate user object — is spot-on. Let me know if you want to explore token rotation, refresh flows, or securing tokens in localStorage vs. cookies.
+
 The best practice when using JWT for login is to return the token and user info separately — not embed full user details inside the token. Here's why this approach is both secure and scalable:
 
 ✅ Why Return Token and User Info Separately
